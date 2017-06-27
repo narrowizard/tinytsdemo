@@ -1,0 +1,10 @@
+{
+    "compilerOptions": {
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "moduleResolution": "classic",
+        "target": "es5",
+        "module": "system",
+        "outFile": "todo.js"
+    }
+}

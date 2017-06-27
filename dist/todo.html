@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>ToDo List</title>
+</head>
+<body>
+    <ul id="list" data-bind="data">
+        <li>[[Name]]</li>
+    </ul>
+    <script src="js/multiplex.min.js"></script>
+    <script src="js/mustache.min.js"></script>
+	<script src="js/jquery-1.12.3.min.js"></script>
+	<script src="js/system.js"></script>
+	<script id="mIEPolyFill">
+		var ua = window.navigator.userAgent;
+		var msie = ua.indexOf("MSIE ");
+
+		if (msie > 0 || !!navigator.userAgent.match(/Trident.*rv\:11\./)) {
+			$("#mIEPolyFill").replaceWith('<script src="js/promise.min.js"><\/script>' +
+				'<script src="js/es6-shim.min.js"><\/script>' +
+				'<script src="js/es6-sham.min.js"><\/script>');
+		}
+	</script>
+	<script src="js/tinyts.js"></script>
+	<script>
+		var customTags = ['[[', ']]'];
+        Mustache.tags = customTags;
+		System.config({
+			map: {
+				'class-validator': '/node_modules/class-validator',
+				'validator': '/node_modules/validator'
+			},
+			packages: {
+				'class-validator': { 'defaultExtension': 'js', 'main': 'index.js' },
+				'validator': { 'defaultExtension': 'js', 'main': 'validator.js' },
+			}
+		});
+	</script>
+	<script src="js/todo.js"></script>
+	<script>
+		System.import("todo");
+	</script>
+</body>
+</html>
