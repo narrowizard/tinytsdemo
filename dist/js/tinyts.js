@@ -1082,26 +1082,8 @@ System.register("tinyts/control/list", ["tinyts/core/view", "tinyts/core/meta"],
                     this.context.RefreshView();
                     return res;
                 };
-                ArrayProxy.prototype.concat = function () {
-                    var items = [];
-                    for (var _i = 0; _i < arguments.length; _i++) {
-                        items[_i] = arguments[_i];
-                    }
-                    var res = _super.prototype.concat.apply(this, items);
-                    this.context.RefreshView();
-                    return res;
-                };
                 ArrayProxy.prototype.shift = function () {
                     var res = _super.prototype.shift.call(this);
-                    this.context.RefreshView();
-                    return res;
-                };
-                ArrayProxy.prototype.splice = function (start, deleteCount) {
-                    var items = [];
-                    for (var _i = 2; _i < arguments.length; _i++) {
-                        items[_i - 2] = arguments[_i];
-                    }
-                    var res = _super.prototype.splice.apply(this, [start, deleteCount].concat(items));
                     this.context.RefreshView();
                     return res;
                 };
@@ -1110,7 +1092,45 @@ System.register("tinyts/control/list", ["tinyts/core/view", "tinyts/core/meta"],
                     for (var _i = 0; _i < arguments.length; _i++) {
                         items[_i] = arguments[_i];
                     }
-                    var res = _super.prototype.unshift.call(this);
+                    var res = _super.prototype.unshift.apply(this, items);
+                    this.context.RefreshView();
+                    return res;
+                };
+                ArrayProxy.prototype.reverse = function () {
+                    var res = _super.prototype.reverse.call(this);
+                    this.context.RefreshView();
+                    return res;
+                };
+                ArrayProxy.prototype.sort = function (compareFn) {
+                    var res = _super.prototype.sort.call(this, compareFn);
+                    this.context.RefreshView();
+                    return res;
+                };
+                ArrayProxy.prototype.concat = function () {
+                    var items = [];
+                    for (var _i = 0; _i < arguments.length; _i++) {
+                        items[_i] = arguments[_i];
+                    }
+                    var temp = [];
+                    for (var i = 0; i < this.length; i++) {
+                        temp[i] = this[i];
+                    }
+                    return temp.concat.apply(temp, items);
+                };
+                ArrayProxy.prototype.splice = function (start, deleteCount) {
+                    var items = [];
+                    for (var _i = 2; _i < arguments.length; _i++) {
+                        items[_i - 2] = arguments[_i];
+                    }
+                    var temp = [];
+                    for (var i = 0; i < this.length; i++) {
+                        temp[i] = this[i];
+                    }
+                    var res = temp.splice.apply(temp, [start, deleteCount].concat(items));
+                    this.length = temp.length;
+                    for (var i = 0; i < temp.length; i++) {
+                        this[i] = temp[i];
+                    }
                     this.context.RefreshView();
                     return res;
                 };
@@ -2122,22 +2142,10 @@ System.register("tinyts/utils/date", [], function (exports_15, context_15) {
                         this.date = new Date();
                         return this;
                     }
-                    return TsDate.fromISO(dateString);
-                }
-                /**
-                 * fromISO 由ISO对象生成一个TsDate对象
-                 * @param s ISO格式的Date字符串
-                 * @return 若参数为空,返回null
-                 */
-                TsDate.fromISO = function (s) {
-                    var temp = new TsDate();
-                    if (!s) {
-                        return null;
-                    }
                     var D = new Date('2011-06-02T09:34:29+02:00');
                     if (!D || +D !== 1307000069000) {
                         //不支持ISO格式的js引擎
-                        var day, tz, rx = /^(\d{4}\-\d\d\-\d\d([tT ][\d:\.]*)?)([zZ]|([+\-])(\d\d):(\d\d))?$/, p = rx.exec(s) || [];
+                        var day, tz, rx = /^(\d{4}\-\d\d\-\d\d([tT ][\d:\.]*)?)([zZ]|([+\-])(\d\d):(\d\d))?$/, p = rx.exec(dateString) || [];
                         if (p[1]) {
                             day = p[1].split(/\D/);
                             for (var i = 0, L = day.length; i < L; i++) {
@@ -2147,7 +2155,7 @@ System.register("tinyts/utils/date", [], function (exports_15, context_15) {
                             day[1] -= 1;
                             day = new Date(Date.UTC.apply(Date, day));
                             if (!day.getDate())
-                                temp.date = null;
+                                this.date = null;
                             if (p[5]) {
                                 tz = (parseInt(p[5], 10) * 60);
                                 if (p[6])
@@ -2157,12 +2165,23 @@ System.register("tinyts/utils/date", [], function (exports_15, context_15) {
                                 if (tz)
                                     day.setUTCMinutes(day.getUTCMinutes() + tz);
                             }
-                            temp.date = day;
+                            this.date = day;
                         }
-                        temp.date = null;
+                        this.date = null;
                     }
                     else {
-                        temp.date = new Date(s);
+                        this.date = new Date(dateString);
+                    }
+                }
+                /**
+                 * fromISO 由ISO对象生成一个TsDate对象
+                 * @param s ISO格式的Date字符串
+                 * @return 若参数为空,返回null
+                 */
+                TsDate.fromISO = function (s) {
+                    var temp = new TsDate(s);
+                    if (!s) {
+                        temp.date = null;
                     }
                     return temp;
                 };
