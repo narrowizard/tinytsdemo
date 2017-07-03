@@ -831,8 +831,6 @@ System.register("tinyts/core/view", ["tinyts/core/http", "tinyts/core/servicepoo
                                         }
                                         instance[view.propertyName] = viewInstance;
                                     }
-                                    // views注入完成,根据views生成数据绑定树
-                                    this.ResolveDataBinding(dataBindingExpressions);
                                 }
                                 // 注入服务
                                 var services = temp["services"];
@@ -845,6 +843,8 @@ System.register("tinyts/core/view", ["tinyts/core/http", "tinyts/core/servicepoo
                             }
                         }
                     }
+                    // views注入完成,根据views生成数据绑定树
+                    this.ResolveDataBinding(dataBindingExpressions);
                     this.AfterInject();
                 };
                 /**
@@ -1247,7 +1247,7 @@ System.register("tinyts/control/list", ["tinyts/core/view", "tinyts/core/meta"],
                  * @param (仅多元素绑定时)元素索引
                 */
                 ListView.prototype.GetView = function (dataIndex, elemIndex) {
-                    var data = this.mData[dataIndex];
+                    var data = $.extend(true, {}, this.mData[dataIndex]);
                     if (this.getTemplpateModel) {
                         data = this.getTemplpateModel(data);
                     }
@@ -1664,9 +1664,13 @@ System.register("tinyts/control/dialog", ["tinyts/core/view"], function (exports
                     }
                     return succ;
                 };
+                /**
+                 * Hide 隐藏Dialog
+                 * 当target初始display状态是none,且定义在style样式表中时,无法正确Show
+                 */
                 Dialog.prototype.Hide = function () {
                     this.display = this.target.css("display");
-                    if (!this.display) {
+                    if (!this.display || this.display == "none") {
                         this.display = "";
                     }
                     this.target.css("display", "none");
