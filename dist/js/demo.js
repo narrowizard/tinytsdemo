@@ -439,14 +439,128 @@ System.register("vm/linkage", ["tinyts/core/tinyts", "utils/link_age", "control/
         }
     };
 });
-System.register("vm/todo", ["tinyts/core/tinyts", "tinyts/control/list", "tinyts/control/input"], function (exports_8, context_8) {
+System.register("vm/router", ["tinyts/core/tinyts", "tinyts/core/http", "tinyts/core/view", "tinyts/control/button"], function (exports_8, context_8) {
     "use strict";
     var __moduleName = context_8 && context_8.id;
-    var tinyts_4, list_3, input_2, KeyCode, TodoData, TodoDemo, aa, _a, _b;
+    var tinyts_4, http_1, view_1, button_2, RouterDemo, _a, _b, _c;
     return {
         setters: [
             function (tinyts_4_1) {
                 tinyts_4 = tinyts_4_1;
+            },
+            function (http_1_1) {
+                http_1 = http_1_1;
+            },
+            function (view_1_1) {
+                view_1 = view_1_1;
+            },
+            function (button_2_1) {
+                button_2 = button_2_1;
+            }
+        ],
+        execute: function () {
+            RouterDemo = (function (_super) {
+                __extends(RouterDemo, _super);
+                function RouterDemo() {
+                    return _super !== null && _super.apply(this, arguments) || this;
+                }
+                RouterDemo.prototype.AfterInject = function () {
+                    var _this = this;
+                    this.r1.OnClick(function () {
+                        http_1.routerInstance.GoTo("/router1.html", { r: 1 });
+                    });
+                    this.r2.OnClick(function () {
+                        http_1.routerInstance.GoTo("/router2.html", { r: 2 });
+                    });
+                    http_1.routerInstance.SetContext({
+                        OnRouteChange: function (url, data) {
+                            http_1.HttpUtils.Get(url).then(function (data) {
+                                _this.container.GetJQueryInstance().html(data.ResponseBody);
+                            });
+                        },
+                        OnRoutePopState: function (state) {
+                            http_1.HttpUtils.Get(state.url).then(function (data) {
+                                _this.container.GetJQueryInstance().html(data.ResponseBody);
+                            });
+                        }
+                    });
+                };
+                return RouterDemo;
+            }(tinyts_4.AncView));
+            __decorate([
+                tinyts_4.v(view_1.View),
+                __metadata("design:type", typeof (_a = typeof view_1.View !== "undefined" && view_1.View) === "function" && _a || Object)
+            ], RouterDemo.prototype, "container", void 0);
+            __decorate([
+                tinyts_4.v(button_2.Button),
+                __metadata("design:type", typeof (_b = typeof button_2.Button !== "undefined" && button_2.Button) === "function" && _b || Object)
+            ], RouterDemo.prototype, "r1", void 0);
+            __decorate([
+                tinyts_4.v(button_2.Button),
+                __metadata("design:type", typeof (_c = typeof button_2.Button !== "undefined" && button_2.Button) === "function" && _c || Object)
+            ], RouterDemo.prototype, "r2", void 0);
+            exports_8("RouterDemo", RouterDemo);
+        }
+    };
+});
+System.register("vm/router1", ["tinyts/core/tinyts"], function (exports_9, context_9) {
+    "use strict";
+    var __moduleName = context_9 && context_9.id;
+    var tinyts_5, Router1Demo;
+    return {
+        setters: [
+            function (tinyts_5_1) {
+                tinyts_5 = tinyts_5_1;
+            }
+        ],
+        execute: function () {
+            Router1Demo = (function (_super) {
+                __extends(Router1Demo, _super);
+                function Router1Demo() {
+                    return _super !== null && _super.apply(this, arguments) || this;
+                }
+                Router1Demo.prototype.AfterInject = function () {
+                    console.log("router1 loaded!");
+                };
+                return Router1Demo;
+            }(tinyts_5.AncView));
+            exports_9("Router1Demo", Router1Demo);
+        }
+    };
+});
+System.register("vm/router2", ["tinyts/core/tinyts"], function (exports_10, context_10) {
+    "use strict";
+    var __moduleName = context_10 && context_10.id;
+    var tinyts_6, Router2Demo;
+    return {
+        setters: [
+            function (tinyts_6_1) {
+                tinyts_6 = tinyts_6_1;
+            }
+        ],
+        execute: function () {
+            Router2Demo = (function (_super) {
+                __extends(Router2Demo, _super);
+                function Router2Demo() {
+                    return _super !== null && _super.apply(this, arguments) || this;
+                }
+                Router2Demo.prototype.AfterInject = function () {
+                    console.log("router2 loaded!");
+                };
+                return Router2Demo;
+            }(tinyts_6.AncView));
+            exports_10("Router2Demo", Router2Demo);
+        }
+    };
+});
+System.register("vm/todo", ["tinyts/core/tinyts", "tinyts/control/list", "tinyts/control/input"], function (exports_11, context_11) {
+    "use strict";
+    var __moduleName = context_11 && context_11.id;
+    var tinyts_7, list_3, input_2, KeyCode, TodoData, TodoDemo, aa, _a, _b;
+    return {
+        setters: [
+            function (tinyts_7_1) {
+                tinyts_7 = tinyts_7_1;
             },
             function (list_3_1) {
                 list_3 = list_3_1;
@@ -503,13 +617,13 @@ System.register("vm/todo", ["tinyts/core/tinyts", "tinyts/control/list", "tinyts
                     // this.data.unshift(new TodoData("111"));
                 };
                 return TodoDemo;
-            }(tinyts_4.AncView));
+            }(tinyts_7.AncView));
             __decorate([
-                tinyts_4.v(list_3.ListView),
+                tinyts_7.v(list_3.ListView),
                 __metadata("design:type", typeof (_a = typeof list_3.ListView !== "undefined" && list_3.ListView) === "function" && _a || Object)
             ], TodoDemo.prototype, "list", void 0);
             __decorate([
-                tinyts_4.v(input_2.InputView),
+                tinyts_7.v(input_2.InputView),
                 __metadata("design:type", typeof (_b = typeof input_2.InputView !== "undefined" && input_2.InputView) === "function" && _b || Object)
             ], TodoDemo.prototype, "newItem", void 0);
             aa = new TodoDemo();
