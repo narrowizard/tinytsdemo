@@ -439,14 +439,64 @@ System.register("vm/linkage", ["tinyts/core/tinyts", "utils/link_age", "control/
         }
     };
 });
-System.register("vm/router", ["tinyts/core/tinyts", "tinyts/core/http", "tinyts/core/view", "tinyts/control/button"], function (exports_8, context_8) {
+System.register("vm/router1", ["tinyts/core/tinyts"], function (exports_8, context_8) {
     "use strict";
     var __moduleName = context_8 && context_8.id;
-    var tinyts_4, http_1, view_1, button_2, RouterDemo, _a, _b, _c;
+    var tinyts_4, Router1Demo;
     return {
         setters: [
             function (tinyts_4_1) {
                 tinyts_4 = tinyts_4_1;
+            }
+        ],
+        execute: function () {
+            Router1Demo = (function (_super) {
+                __extends(Router1Demo, _super);
+                function Router1Demo() {
+                    return _super !== null && _super.apply(this, arguments) || this;
+                }
+                Router1Demo.prototype.AfterInject = function () {
+                    console.log("router1 loaded!");
+                };
+                return Router1Demo;
+            }(tinyts_4.AncView));
+            exports_8("Router1Demo", Router1Demo);
+        }
+    };
+});
+System.register("vm/router2", ["tinyts/core/tinyts"], function (exports_9, context_9) {
+    "use strict";
+    var __moduleName = context_9 && context_9.id;
+    var tinyts_5, Router2Demo;
+    return {
+        setters: [
+            function (tinyts_5_1) {
+                tinyts_5 = tinyts_5_1;
+            }
+        ],
+        execute: function () {
+            Router2Demo = (function (_super) {
+                __extends(Router2Demo, _super);
+                function Router2Demo() {
+                    return _super !== null && _super.apply(this, arguments) || this;
+                }
+                Router2Demo.prototype.AfterInject = function () {
+                    console.log("router2 loaded!");
+                };
+                return Router2Demo;
+            }(tinyts_5.AncView));
+            exports_9("Router2Demo", Router2Demo);
+        }
+    };
+});
+System.register("vm/router", ["tinyts/core/tinyts", "tinyts/core/http", "tinyts/core/view", "tinyts/core/router", "tinyts/control/button", "vm/router1", "vm/router2"], function (exports_10, context_10) {
+    "use strict";
+    var __moduleName = context_10 && context_10.id;
+    var tinyts_6, http_1, view_1, router_1, button_2, router1_1, router2_1, RouterDemo, _a, _b, _c;
+    return {
+        setters: [
+            function (tinyts_6_1) {
+                tinyts_6 = tinyts_6_1;
             },
             function (http_1_1) {
                 http_1 = http_1_1;
@@ -454,8 +504,17 @@ System.register("vm/router", ["tinyts/core/tinyts", "tinyts/core/http", "tinyts/
             function (view_1_1) {
                 view_1 = view_1_1;
             },
+            function (router_1_1) {
+                router_1 = router_1_1;
+            },
             function (button_2_1) {
                 button_2 = button_2_1;
+            },
+            function (router1_1_1) {
+                router1_1 = router1_1_1;
+            },
+            function (router2_1_1) {
+                router2_1 = router2_1_1;
             }
         ],
         execute: function () {
@@ -466,13 +525,16 @@ System.register("vm/router", ["tinyts/core/tinyts", "tinyts/core/http", "tinyts/
                 }
                 RouterDemo.prototype.AfterInject = function () {
                     var _this = this;
+                    var r = new router_1.Router();
+                    r.AddAncViewRoute("/router1.html", router1_1.Router1Demo);
+                    r.AddAncViewRoute("/router2.html", router2_1.Router2Demo);
                     this.r1.OnClick(function () {
-                        http_1.routerInstance.GoTo("/router1.html", { r: 1 });
+                        r.GoTo("/router1.html", "");
                     });
                     this.r2.OnClick(function () {
-                        http_1.routerInstance.GoTo("/router2.html", { r: 2 });
+                        r.GoTo("/router2.html", "");
                     });
-                    http_1.routerInstance.SetContext({
+                    r.SetContext({
                         OnRouteChange: function (url, data) {
                             http_1.HttpUtils.Get(url).then(function (data) {
                                 _this.container.GetJQueryInstance().html(data.ResponseBody);
@@ -486,70 +548,20 @@ System.register("vm/router", ["tinyts/core/tinyts", "tinyts/core/http", "tinyts/
                     });
                 };
                 return RouterDemo;
-            }(tinyts_4.AncView));
+            }(tinyts_6.AncView));
             __decorate([
-                tinyts_4.v(view_1.View),
+                tinyts_6.v(view_1.View),
                 __metadata("design:type", typeof (_a = typeof view_1.View !== "undefined" && view_1.View) === "function" && _a || Object)
             ], RouterDemo.prototype, "container", void 0);
             __decorate([
-                tinyts_4.v(button_2.Button),
+                tinyts_6.v(button_2.Button),
                 __metadata("design:type", typeof (_b = typeof button_2.Button !== "undefined" && button_2.Button) === "function" && _b || Object)
             ], RouterDemo.prototype, "r1", void 0);
             __decorate([
-                tinyts_4.v(button_2.Button),
+                tinyts_6.v(button_2.Button),
                 __metadata("design:type", typeof (_c = typeof button_2.Button !== "undefined" && button_2.Button) === "function" && _c || Object)
             ], RouterDemo.prototype, "r2", void 0);
-            exports_8("RouterDemo", RouterDemo);
-        }
-    };
-});
-System.register("vm/router1", ["tinyts/core/tinyts"], function (exports_9, context_9) {
-    "use strict";
-    var __moduleName = context_9 && context_9.id;
-    var tinyts_5, Router1Demo;
-    return {
-        setters: [
-            function (tinyts_5_1) {
-                tinyts_5 = tinyts_5_1;
-            }
-        ],
-        execute: function () {
-            Router1Demo = (function (_super) {
-                __extends(Router1Demo, _super);
-                function Router1Demo() {
-                    return _super !== null && _super.apply(this, arguments) || this;
-                }
-                Router1Demo.prototype.AfterInject = function () {
-                    console.log("router1 loaded!");
-                };
-                return Router1Demo;
-            }(tinyts_5.AncView));
-            exports_9("Router1Demo", Router1Demo);
-        }
-    };
-});
-System.register("vm/router2", ["tinyts/core/tinyts"], function (exports_10, context_10) {
-    "use strict";
-    var __moduleName = context_10 && context_10.id;
-    var tinyts_6, Router2Demo;
-    return {
-        setters: [
-            function (tinyts_6_1) {
-                tinyts_6 = tinyts_6_1;
-            }
-        ],
-        execute: function () {
-            Router2Demo = (function (_super) {
-                __extends(Router2Demo, _super);
-                function Router2Demo() {
-                    return _super !== null && _super.apply(this, arguments) || this;
-                }
-                Router2Demo.prototype.AfterInject = function () {
-                    console.log("router2 loaded!");
-                };
-                return Router2Demo;
-            }(tinyts_6.AncView));
-            exports_10("Router2Demo", Router2Demo);
+            exports_10("RouterDemo", RouterDemo);
         }
     };
 });
