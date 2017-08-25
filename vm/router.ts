@@ -17,13 +17,22 @@ export class RouterDemo extends AncView {
     @v(Button)
     r2: Button;
 
+    RouterFactory(v: { new (...args: any[]): AncView }) {
+        return (state: { url: string, data: any }) => {
+            HttpUtils.Get(state.url).then((data) => {
+                this.container.GetJQueryInstance().html(data.ResponseBody);
+                var aa = new v();
+            });
+        };
+    }
+
     AfterInject() {
 
         var r = new Router();
 
-        r.AddAncViewRoute("/router1.html", Router1Demo);
+        r.AddRouter("/router1.html", this.RouterFactory(Router1Demo));
 
-        r.AddAncViewRoute("/router2.html", Router2Demo);
+        r.AddRouter("/router2.html", this.RouterFactory(Router2Demo));
 
         this.r1.OnClick(() => {
             r.GoTo("/router1.html", "");
@@ -33,18 +42,6 @@ export class RouterDemo extends AncView {
             r.GoTo("/router2.html", "");
         });
 
-        r.SetContext({
-            OnRouteChange: (url, data) => {
-                HttpUtils.Get(url).then((data) => {
-                    this.container.GetJQueryInstance().html(data.ResponseBody);
-                });
-            },
-            OnRoutePopState: (state) => {
-                HttpUtils.Get(state.url).then((data) => {
-                    this.container.GetJQueryInstance().html(data.ResponseBody);
-                });
-            }
-        })
     }
 }
 

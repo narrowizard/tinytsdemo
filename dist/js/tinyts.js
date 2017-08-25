@@ -2149,7 +2149,7 @@ System.register("tinyts/core/tinyts", ["tinyts/core/view"], function (exports_13
 System.register("tinyts/core/router", ["tinyts/core/http"], function (exports_14, context_14) {
     "use strict";
     var __moduleName = context_14 && context_14.id;
-    var http_2, RouterMode, Router;
+    var http_2, Router;
     return {
         setters: [
             function (http_2_1) {
@@ -2157,41 +2157,15 @@ System.register("tinyts/core/router", ["tinyts/core/http"], function (exports_14
             }
         ],
         execute: function () {
-            (function (RouterMode) {
-                /**
-                 * Global 全局路由模式,路由通过Router来跳转
-                 */
-                RouterMode[RouterMode["Global"] = 0] = "Global";
-                /**
-                 * Simple 默认值,简单路由模式,自己控制路由跳转
-                 */
-                RouterMode[RouterMode["Simple"] = 1] = "Simple";
-            })(RouterMode || (RouterMode = {}));
-            exports_14("RouterMode", RouterMode);
             Router = (function () {
                 function Router() {
                     var me = this;
-                    this.mode = RouterMode.Simple;
                     this.routerMap = {};
                     window.onpopstate = function (event) {
                         var state = event.state;
-                        if (me.context) {
-                            me.context.OnRoutePopState(state);
-                        }
-                        me.routerMap[state.url]();
+                        me.routerMap[state.url](state);
                     };
                 }
-                /**
-                 * SetContext 设置上下文
-                 * @param context.OnRouteSucc 路由完成回调
-                 * @param context.OnRouteError 路由错误回调
-                 */
-                Router.prototype.SetContext = function (context) {
-                    this.context = context;
-                };
-                Router.prototype.SetMode = function (mode) {
-                    this.mode = mode;
-                };
                 /**
                  * GoBack 返回上一页
                  */
@@ -2220,10 +2194,7 @@ System.register("tinyts/core/router", ["tinyts/core/http"], function (exports_14
                     if (window.history.pushState) {
                         window.history.pushState(stateData, "", url);
                     }
-                    if (me.context) {
-                        me.context.OnRouteChange(url, data);
-                    }
-                    this.routerMap[url]();
+                    this.routerMap[url]({ url: url, data: data });
                 };
                 /**
                  * ReplaceCurrentState 修改当前router的状态(无历史记录)
@@ -2236,10 +2207,7 @@ System.register("tinyts/core/router", ["tinyts/core/http"], function (exports_14
                     if (window.history.replaceState) {
                         window.history.replaceState(stateData, "", url);
                     }
-                    if (me.context) {
-                        me.context.OnRouteChange(url, data);
-                    }
-                    this.routerMap[url]();
+                    this.routerMap[url]({ url: url, data: data });
                 };
                 /**
                  * ReplaceCurrentStateWithParam 修改当前router的状态,并将data存储在url中
@@ -2255,26 +2223,15 @@ System.register("tinyts/core/router", ["tinyts/core/http"], function (exports_14
                     if (window.history.replaceState) {
                         window.history.replaceState(stateData, "", url2);
                     }
-                    if (changeRoute && me.context) {
-                        me.context.OnRouteChange(url2, stateData);
+                    if (changeRoute) {
+                        this.routerMap[url]({ url: url2, data: stateData });
                     }
-                    this.routerMap[url]();
                 };
-                Router.prototype.addRouter = function (url, func) {
+                Router.prototype.AddRouter = function (url, func) {
                     if (this.routerMap[url]) {
                         console.warn("router " + url + " already exist, overwrite it!");
                     }
                     this.routerMap[url] = func;
-                };
-                Router.prototype.AddAncViewRoute = function (url, c) {
-                    this.addRouter(url, function () {
-                        var aa = new c();
-                    });
-                };
-                Router.prototype.AddFuncRouter = function (url, func) {
-                    this.addRouter(url, function () {
-                        func();
-                    });
                 };
                 return Router;
             }());

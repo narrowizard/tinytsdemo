@@ -523,28 +523,24 @@ System.register("vm/router", ["tinyts/core/tinyts", "tinyts/core/http", "tinyts/
                 function RouterDemo() {
                     return _super !== null && _super.apply(this, arguments) || this;
                 }
-                RouterDemo.prototype.AfterInject = function () {
+                RouterDemo.prototype.RouterFactory = function (v) {
                     var _this = this;
+                    return function (state) {
+                        http_1.HttpUtils.Get(state.url).then(function (data) {
+                            _this.container.GetJQueryInstance().html(data.ResponseBody);
+                            var aa = new v();
+                        });
+                    };
+                };
+                RouterDemo.prototype.AfterInject = function () {
                     var r = new router_1.Router();
-                    r.AddAncViewRoute("/router1.html", router1_1.Router1Demo);
-                    r.AddAncViewRoute("/router2.html", router2_1.Router2Demo);
+                    r.AddRouter("/router1.html", this.RouterFactory(router1_1.Router1Demo));
+                    r.AddRouter("/router2.html", this.RouterFactory(router2_1.Router2Demo));
                     this.r1.OnClick(function () {
                         r.GoTo("/router1.html", "");
                     });
                     this.r2.OnClick(function () {
                         r.GoTo("/router2.html", "");
-                    });
-                    r.SetContext({
-                        OnRouteChange: function (url, data) {
-                            http_1.HttpUtils.Get(url).then(function (data) {
-                                _this.container.GetJQueryInstance().html(data.ResponseBody);
-                            });
-                        },
-                        OnRoutePopState: function (state) {
-                            http_1.HttpUtils.Get(state.url).then(function (data) {
-                                _this.container.GetJQueryInstance().html(data.ResponseBody);
-                            });
-                        }
                     });
                 };
                 return RouterDemo;
